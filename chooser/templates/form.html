@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block extraheader %}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="wrapper">
+		<div class="title"><span>{{ title }}</span></div>
+		<form method="POST" action="" enctype="multipart/form-data">
+			{% csrf_token %}
+
+			{% for field in form %}
+			<div class="row">
+				<i class="fas fa-user"></i>
+				<label for="{{ field.id_for_label }}">{{ field.label }}</label>
+				{% render_field field class='form-control' %}
+				<div class="row">{{ field.help_text }}</div>
+				<div class="">{{ field.errors }}</div>
+			</div>
+			{% endfor %}
+
+			<div>{{ form.non_field_errors }}</div>
+
+			<div class="row button">
+				<input type="submit" value="{{ button_text }}">
+			</div>
+
+			{% if "login" in request.path %}
+			<div class="signup-link">{{noaccount_text}} <a href="{% url 'signup' %}">{{signupurl}}</a></div>
+			{% endif %}
+			{% if "signup" in request.path %}
+			<div class="signup-link">Есть аккаунт? <a href="{% url 'login' %}">Войти?</a></div>
+			{% endif %}
+
+		</form>
+	</div>
+</div>
+{% endblock %}
