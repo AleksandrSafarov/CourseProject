@@ -8,8 +8,9 @@
 
 {% block content %}
 <div class="form-container">
-
-	<label class="fs-3">{{ title }}</label>
+	<div class="form-title">
+		<label class="fs-3">{{ title }}</label>
+	</div>
 	<form method="POST" action="" enctype="multipart/form-data">
 		<div class="form-group">
 			{% csrf_token %}

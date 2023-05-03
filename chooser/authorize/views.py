@@ -31,8 +31,6 @@ class Login(LoginView):
         context = super().get_context_data(**kwargs)
         context["title"] = "Вход"
         context["button_text"] = "Войти"
-        context['noaccount_text'] = 'Нет аккаунта? '
-        context['signupurl'] = 'Создайте!'
         return context
 
     def get_success_url(self):

@@ -15,11 +15,18 @@ div.row{
 }
 
 div.form-container{
-    text-align: center;
-    padding-left: 25%;
-    padding-right: 25%;
+    padding-left: 30%;
+    padding-right: 30%;
 }
 
 div.signup-link{
     margin-top: 0.3%;
+}
+
+div.form-title{
+    text-align: center;
+}
+
+div.signup-link{
+    text-align: center;
 }
