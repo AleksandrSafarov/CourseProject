@@ -7,5 +7,19 @@ body {
 }
 
 header{
-    background: rgb(255, 111, 58)
+    background: rgb(38, 70, 83)
+}
+
+div.row{
+    margin-top: 0.2%;
+}
+
+div.form-container{
+    text-align: center;
+    padding-left: 25%;
+    padding-right: 25%;
+}
+
+div.signup-link{
+    margin-top: 0.3%;
 }
