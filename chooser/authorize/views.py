@@ -1,12 +1,12 @@
-from django.shortcuts import render
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls.base import reverse_lazy
 from django.views.generic import *
 
 from .forms import *
+
 
 class SignUp(CreateView):
     form_class = SignUpForm
