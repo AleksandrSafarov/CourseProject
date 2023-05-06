@@ -14,8 +14,10 @@ class Index(TemplateView):
     template_name = 'index.html'
 
     def get_context_data(self, **kwargs):
+        themes = list(Theme.objects.all())
+        themes.sort(key=lambda x: x.date, reverse=True)
         self.extra_context = {
-            'themes': Theme.objects.all()
+            'themes': themes
         }
         return super().get_context_data(**kwargs)
         
