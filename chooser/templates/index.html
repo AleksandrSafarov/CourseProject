@@ -8,6 +8,8 @@
 
 {% block content %}
 {% for theme in themes %}
-<p>{{ theme.title }}</p>
+<p>
+<a href="{% url 'theme' theme.id %}">{{ theme.title }}</a>
+</p>
 {% endfor %}
 {% endblock %}
