@@ -7,7 +7,7 @@ from django.utils import timezone
 
 class Theme(models.Model):
     title = models.CharField(max_length=50)
-    description = models.CharField(max_length=1000)
+    description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField(default=datetime.datetime.now(tz=timezone.utc) + datetime.timedelta(hours=3))
 

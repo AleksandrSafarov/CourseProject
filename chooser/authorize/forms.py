@@ -29,7 +29,7 @@ class LoginForm(AuthenticationForm):
         widget=forms.PasswordInput(attrs={'placeholder': "Пароль", "class": "form-control"})
         )
 
-class ChangePassForm(PasswordChangeForm):
+class ChangePasswordForm(PasswordChangeForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': "Старый пароль"})
         )

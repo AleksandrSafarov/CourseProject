@@ -51,8 +51,8 @@ class ChangeUserData(LoginRequiredMixin, UpdateView):
         context["button_text"] = "Сохранить"
         return context
 
-class ChangePass(LoginRequiredMixin, PasswordChangeView):
-    form_class = ChangePassForm
+class ChangePassword(LoginRequiredMixin, PasswordChangeView):
+    form_class = ChangePasswordForm
     template_name = 'form.html'
     login_url = reverse_lazy('login')
     success_url = reverse_lazy('index')
