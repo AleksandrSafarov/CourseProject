@@ -7,5 +7,12 @@
 {% endblock %}
 
 {% block content %}
-<p>{{theme.title}}</p>
+<h2>{{theme.title}}</h2>
+<p>{{theme.description}}</p>
+{% if percent == -1 %}
+<p>Никто еще не проголосовал</p>
+{% else %}
+<p>{{votesFor}} | {{votesAgainst}}</p>
+<p>За проголосовало: {{percent}}%</p>
+{% endif %}
 {% endblock %}

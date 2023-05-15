@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block extraheader %}
+{% endblock %}
+
+{% block content %}
+<h2>Личный кабинет</h2>
+{% for theme in userthemes %}
+<p>
+<a href="{% url 'theme' theme.id %}">{{ theme.title }}</a>
+</p>
+{% endfor %}
+{% endblock %}

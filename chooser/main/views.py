@@ -29,14 +29,24 @@ class Index(TemplateView):
 
 def theme(request, theme_id):
     theme = Theme.objects.filter(id=theme_id)
-    votesFor = VoteFor.objects.filter(theme=theme_id)
-    votesAgainst = VoteAgainst.objects.filter(theme=theme_id)
-    
+    votesFor = list(VoteFor.objects.filter(theme=theme_id))
+    votesAgainst = list(VoteAgainst.objects.filter(theme=theme_id))
+    if len(votesAgainst) + len(votesFor) == 0:
+        percent = -1
+    elif int(len(votesFor) / (len(votesFor) + len(votesAgainst)) * 100) == len(votesFor) / (len(votesFor) + len(votesAgainst)) * 100:
+        percent = round(len(votesFor) / (len(votesFor) + len(votesAgainst)) * 100)
+    else:
+        percent = len(votesFor) / (len(votesFor) + len(votesAgainst)) * 100
+        percent = round(percent, 2)
+
     if len(theme) == 0:
         raise Http404
     
     context={
         'theme':theme[0],
+        'votesFor':len(votesFor),
+        'votesAgainst': len(votesAgainst),
+        'percent': percent
     }
 
     return render(request, 'theme.html', context=context)
@@ -56,3 +66,16 @@ class CreateTheme(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         form.save()
         return redirect('index')
+
+    
+class PersonalArea(LoginRequiredMixin, TemplateView):
+    template_name='personal.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        user_themes = list(Theme.objects.filter(user=self.request.user))
+        user_themes.sort(key=lambda x: x.date, reverse=True)
+        print(user_themes)
+        self.extra_context = {
+            'userthemes': user_themes
+        }
+        return super().get_context_data(**kwargs)

@@ -28,7 +28,7 @@
                 </li>
                 {% if request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link text-light text-decoration-underline fs-4" href="{% url 'index' %}" id="userInfo">
+                    <a class="nav-link text-light text-decoration-underline fs-4" href="{% url 'personal' %}" id="userInfo">
                          {{user.username}}
                     </a>
                 </li>
