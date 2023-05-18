@@ -1,17 +1,30 @@
-import json
 
-from django.contrib.auth.models import User
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import *
 
 from .models import *
 
 from .forms import *
 
+
+def getVote(request):
+    if(request.GET.get('btnFor')):
+        tId = int(request.GET.get('btnFor'))
+        choosedTheme=Theme.objects.filter(id=tId)[0]
+        vote = VoteFor(user=request.user, theme=choosedTheme)
+        vote.save()
+        return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnFor')))
+    elif(request.GET.get('btnAgainst')):
+        tId = int(request.GET.get('btnAgainst'))
+        choosedTheme=Theme.objects.filter(id=tId)[0]
+        vote = VoteAgainst(user=request.user, theme=choosedTheme)
+        vote.save()
+        return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnAgainst')))
+    return render(request, 'index.html')
+    
 
 class Index(TemplateView):
     template_name = 'index.html'
@@ -29,6 +42,10 @@ class Index(TemplateView):
 
 def theme(request, theme_id):
     theme = Theme.objects.filter(id=theme_id)
+
+    if len(theme) == 0:
+        raise Http404
+    
     votesFor = list(VoteFor.objects.filter(theme=theme_id))
     votesAgainst = list(VoteAgainst.objects.filter(theme=theme_id))
     if len(votesAgainst) + len(votesFor) == 0:
@@ -39,14 +56,25 @@ def theme(request, theme_id):
         percent = len(votesFor) / (len(votesFor) + len(votesAgainst)) * 100
         percent = round(percent, 2)
 
-    if len(theme) == 0:
-        raise Http404
+    userVoteFor = []
+    userVoteAgainst = []
+
+    if request.user.is_authenticated:
+        userVoteFor = VoteFor.objects.filter(theme=theme_id, user=request.user)
+        userVoteAgainst = VoteFor.objects.filter(theme=theme_id, user=request.user)
+    
+    isVoted = False
+
+    if len(userVoteFor) != 0 or len(userVoteAgainst) != 0:
+        isVoted = True
+    print(isVoted)
     
     context={
         'theme':theme[0],
         'votesFor':len(votesFor),
         'votesAgainst': len(votesAgainst),
-        'percent': percent
+        'percent': percent,
+        'isVoted': isVoted
     }
 
     return render(request, 'theme.html', context=context)
@@ -74,7 +102,6 @@ class PersonalArea(LoginRequiredMixin, TemplateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         user_themes = list(Theme.objects.filter(user=self.request.user))
         user_themes.sort(key=lambda x: x.date, reverse=True)
-        print(user_themes)
         self.extra_context = {
             'userthemes': user_themes
         }
