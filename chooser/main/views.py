@@ -1,4 +1,3 @@
-
 from django.http import Http404, HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -61,12 +60,13 @@ def theme(request, theme_id):
 
     if request.user.is_authenticated:
         userVoteFor = VoteFor.objects.filter(theme=theme_id, user=request.user)
-        userVoteAgainst = VoteFor.objects.filter(theme=theme_id, user=request.user)
+        userVoteAgainst = VoteAgainst.objects.filter(theme=theme_id, user=request.user)
     
     isVoted = False
 
     if len(userVoteFor) != 0 or len(userVoteAgainst) != 0:
         isVoted = True
+    print(len(userVoteFor), len(userVoteAgainst))
     print(isVoted)
     
     context={

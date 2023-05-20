@@ -7,10 +7,19 @@
 {% endblock %}
 
 {% block content %}
-<h2>Личный кабинет</h2>
-{% for theme in userthemes %}
-<p>
-<a href="{% url 'theme' theme.id %}">{{ theme.title }}</a>
-</p>
-{% endfor %}
+<div class="personal_block_content">
+    <h2>Личный кабинет</h2>
+    <div class="block_content">
+        <div class="user_themes">
+            {% for theme in userthemes %}
+                <p>
+                <a href="{% url 'theme' theme.id %}">{{ theme.title }}</a>
+                </p>
+            {% endfor %}
+        </div>
+        <div class="info">
+            <p>{{ user.username }}</p>
+        </div>
+    </div>
+</div>
 {% endblock %}

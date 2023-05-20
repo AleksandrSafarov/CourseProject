@@ -30,3 +30,8 @@ div.form-title{
 div.signup-link{
     text-align: center;
 }
+
+div.block_content{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+}
