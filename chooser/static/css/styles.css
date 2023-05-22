@@ -31,7 +31,22 @@ div.signup-link{
     text-align: center;
 }
 
-div.block_content{
+div.block-content{
     display: grid;
     grid-template-columns: 2fr 1fr;
+}
+
+div.personal-block-content{
+    padding-left: 3%;
+    padding-right: 10%;
+}
+
+div.info{
+    border: 1px solid rgb(38, 70, 83);
+    border-radius: 10px;
+    padding: 5%;
+    color: white;
+    background-color: rgb(38, 70, 83);
+    font-size: large;
+    margin-left: 5%;
 }

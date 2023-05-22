@@ -7,18 +7,22 @@
 {% endblock %}
 
 {% block content %}
-<div class="personal_block_content">
+<div class="personal-block-content">
     <h2>Личный кабинет</h2>
-    <div class="block_content">
-        <div class="user_themes">
+    <div class="block-content">
+        <div class="user-themes">
             {% for theme in userthemes %}
-                <p>
+                <p class="theme-title">
                 <a href="{% url 'theme' theme.id %}">{{ theme.title }}</a>
                 </p>
             {% endfor %}
         </div>
         <div class="info">
             <p>{{ user.username }}</p>
+            <p>{{ user.email }}</p>
+            <a href="{% url 'edituserdata' %}" class="link-light">Изменить данные пользователя</a>
+            <br>
+            <a href="{% url 'changepassword' %}" class="link-light">Изменить пароль</a>
         </div>
     </div>
 </div>
