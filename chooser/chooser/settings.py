@@ -87,12 +87,15 @@ DATABASES = {
    }
 }
 '''
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+  'default': {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'neondb',
+    'USER': 'aleks.safarov2005',
+    'PASSWORD': '9VMhsWNZPDb3',
+    'HOST': 'ep-delicate-snow-348574.us-east-2.aws.neon.tech',
+    'PORT': '5432',
+  }
 }
 
 
