@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Удаление тем{% endblock %}
+
+{% block extraheader %}
+{% endblock %}
+
+{% block content %}
+{% for theme in themes %}
+<p>
+    <a href="{% url 'theme' theme.id %}">{{ theme.title }}</a>
+</p>
+<form action="deleteTheme" method="get">
+    <button type="submit" class="voteFor" value="{{theme.id}}" name="btnDel">Удалить</button>
+</form>
+{% endfor %}
+{% endblock %}

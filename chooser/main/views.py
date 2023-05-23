@@ -5,23 +5,37 @@ from django.urls import reverse_lazy
 from django.views.generic import *
 
 from .models import *
-
 from .forms import *
+from .utils import StaffRequiredMixin
 
 
 def getVote(request):
     if(request.GET.get('btnFor')):
         tId = int(request.GET.get('btnFor'))
-        choosedTheme=Theme.objects.filter(id=tId)[0]
+        choosedTheme = Theme.objects.filter(id=tId)[0]
+        if len(VoteFor.objects.filter(user=request.user, theme=choosedTheme)) or len(VoteAgainst.objects.filter(user=request.user, theme=choosedTheme)):
+            return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnFor'))) 
         vote = VoteFor(user=request.user, theme=choosedTheme)
         vote.save()
         return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnFor')))
     elif(request.GET.get('btnAgainst')):
         tId = int(request.GET.get('btnAgainst'))
-        choosedTheme=Theme.objects.filter(id=tId)[0]
+        choosedTheme = Theme.objects.filter(id=tId)[0]
+        if len(VoteAgainst.objects.filter(user=request.user, theme=choosedTheme)) or len(VoteFor.objects.filter(user=request.user, theme=choosedTheme)):
+            return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnAgainst'))) 
         vote = VoteAgainst(user=request.user, theme=choosedTheme)
         vote.save()
         return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnAgainst')))
+    return render(request, 'index.html')
+
+def deleteTheme(request):
+    if request.GET.get('btnDel'):
+        tId = int(request.GET.get('btnDel'))
+        choosedTheme = Theme.objects.filter(id=tId)
+        if len(choosedTheme) == 0:
+            return HttpResponseRedirect('/del')
+        choosedTheme.delete()
+        return HttpResponseRedirect('/del')
     return render(request, 'index.html')
     
 
@@ -104,5 +118,15 @@ class PersonalArea(LoginRequiredMixin, TemplateView):
         user_themes.sort(key=lambda x: x.date, reverse=True)
         self.extra_context = {
             'userthemes': user_themes
+        }
+        return super().get_context_data(**kwargs)
+
+class DeleteThemes(StaffRequiredMixin, TemplateView):
+    template_name = 'deleteThemes.html'
+    login_url = 'login'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        themes = Theme.objects.exclude(user=self.request.user)
+        self.extra_context = {
+            'themes': themes
         }
         return super().get_context_data(**kwargs)
