@@ -5,7 +5,7 @@ from django.db import models
 from django.utils import timezone
 
 
-class Theme(models.Model):
+class Voting(models.Model):
     title = models.CharField(max_length=50)
     description = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -13,12 +13,16 @@ class Theme(models.Model):
 
 class VoteFor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
+    voting = models.ForeignKey(Voting, on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = "VotesFor"
 
 class VoteAgainst(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    theme = models.ForeignKey(Theme, on_delete=models.CASCADE)
+    voting = models.ForeignKey(Voting, on_delete=models.CASCADE)
     class Meta:
         verbose_name_plural = "VotesAgainst"
+
+class StaffRequest(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.IntegerField(default=0)

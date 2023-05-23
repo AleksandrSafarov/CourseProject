@@ -7,8 +7,8 @@
 {% endblock %}
 
 {% block content %}
-    <h2>{{theme.title}}</h2>
-    <p>{{theme.description}}</p>
+    <h2>{{voting.title}}</h2>
+    <p>{{voting.description}}</p>
     {% if percent == -1 %}
         <p>Никто еще не проголосовал</p>
     {% else %}
@@ -16,14 +16,18 @@
         <p>За проголосовало: {{percent}}%</p>
     {% endif %}
     {% if request.user.is_authenticated %}
+    {% if voting.user.id == request.user.id %}
+    <p>Вы создали это голосование</p>
+    {% else %}
         {% if isVoted %}
         <p>Вы уже проголосовали</p>
         {% else %}
         <form action="getVote" method="get">
-            <button type="submit" class="voteFor" value="{{theme.id}}" name="btnFor">За</button>
-            <button type="submit" class="voteAgainst" value="{{theme.id}}" name="btnAgainst">Против</button>
+            <button type="submit" class="voteFor" value="{{voting.id}}" name="btnFor">За</button>
+            <button type="submit" class="voteAgainst" value="{{voting.id}}" name="btnAgainst">Против</button>
         </form>
         {% endif %}
+    {% endif %}
     {% else %}
         <p>Авторизируйтесь, чтобы проголосовать.</p>
     {% endif %}

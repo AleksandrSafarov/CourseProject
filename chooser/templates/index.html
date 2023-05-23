@@ -7,9 +7,9 @@
 {% endblock %}
 
 {% block content %}
-{% for theme in themes %}
+{% for voting in votings %}
 <p>
-<a href="{% url 'theme' theme.id %}">{{ theme.title }}</a>
+<a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>
 </p>
 {% endfor %}
 {% endblock %}

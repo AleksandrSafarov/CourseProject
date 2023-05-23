@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Удалить голосования{% endblock %}
+
+{% block extraheader %}
+{% endblock %}
+
+{% block content %}
+{% for voting in votings %}
+<p>
+    <a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>
+</p>
+<form action="deletevoting" method="get">
+    <button type="submit" class="voteFor" value="{{voting.id}}" name="btnDel">Удалить</button>
+</form>
+<hr>
+{% endfor %}
+{% endblock %}

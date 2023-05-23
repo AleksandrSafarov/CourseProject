@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -12,55 +12,40 @@ from .utils import StaffRequiredMixin
 def getVote(request):
     if(request.GET.get('btnFor')):
         tId = int(request.GET.get('btnFor'))
-        choosedTheme = Theme.objects.filter(id=tId)[0]
-        if len(VoteFor.objects.filter(user=request.user, theme=choosedTheme)) or len(VoteAgainst.objects.filter(user=request.user, theme=choosedTheme)):
-            return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnFor'))) 
-        vote = VoteFor(user=request.user, theme=choosedTheme)
+        choosedVoting = Voting.objects.filter(id=tId)[0]
+        if len(VoteFor.objects.filter(user=request.user, voting=choosedVoting)) or len(VoteAgainst.objects.filter(user=request.user, voting=choosedVoting)):
+            return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnFor'))) 
+        vote = VoteFor(user=request.user, voting=choosedVoting)
         vote.save()
-        return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnFor')))
+        return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnFor')))
     elif(request.GET.get('btnAgainst')):
         tId = int(request.GET.get('btnAgainst'))
-        choosedTheme = Theme.objects.filter(id=tId)[0]
-        if len(VoteAgainst.objects.filter(user=request.user, theme=choosedTheme)) or len(VoteFor.objects.filter(user=request.user, theme=choosedTheme)):
-            return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnAgainst'))) 
-        vote = VoteAgainst(user=request.user, theme=choosedTheme)
+        choosedVoting = Voting.objects.filter(id=tId)[0]
+        if len(VoteAgainst.objects.filter(user=request.user, voting=choosedVoting)) or len(VoteFor.objects.filter(user=request.user, voting=choosedVoting)):
+            return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnAgainst'))) 
+        vote = VoteAgainst(user=request.user, voting=choosedVoting)
         vote.save()
-        return HttpResponseRedirect('/theme/%i'%int(request.GET.get('btnAgainst')))
+        return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnAgainst')))
     return render(request, 'index.html')
 
-def deleteTheme(request):
+def deleteVoting(request):
     if request.GET.get('btnDel'):
         tId = int(request.GET.get('btnDel'))
-        choosedTheme = Theme.objects.filter(id=tId)
-        if len(choosedTheme) == 0:
+        choosedVoting = Voting.objects.filter(id=tId)
+        if len(choosedVoting) == 0:
             return HttpResponseRedirect('/del')
-        choosedTheme.delete()
+        choosedVoting.delete()
         return HttpResponseRedirect('/del')
     return render(request, 'index.html')
-    
 
-class Index(TemplateView):
-    template_name = 'index.html'
+def voting(request, voting_id):
+    voting = Voting.objects.filter(id=voting_id)
 
-    def get_context_data(self, **kwargs):
-        themes = list(Theme.objects.all())
-        themes.sort(key=lambda x: x.date, reverse=True)
-        self.extra_context = {
-            'themes': themes
-        }
-        return super().get_context_data(**kwargs)
-        
-    def get_success_url(self):
-        return reverse_lazy('index')
-
-def theme(request, theme_id):
-    theme = Theme.objects.filter(id=theme_id)
-
-    if len(theme) == 0:
+    if len(voting) == 0:
         raise Http404
     
-    votesFor = list(VoteFor.objects.filter(theme=theme_id))
-    votesAgainst = list(VoteAgainst.objects.filter(theme=theme_id))
+    votesFor = list(VoteFor.objects.filter(voting=voting_id))
+    votesAgainst = list(VoteAgainst.objects.filter(voting=voting_id))
     if len(votesAgainst) + len(votesFor) == 0:
         percent = -1
     elif int(len(votesFor) / (len(votesFor) + len(votesAgainst)) * 100) == len(votesFor) / (len(votesFor) + len(votesAgainst)) * 100:
@@ -73,34 +58,46 @@ def theme(request, theme_id):
     userVoteAgainst = []
 
     if request.user.is_authenticated:
-        userVoteFor = VoteFor.objects.filter(theme=theme_id, user=request.user)
-        userVoteAgainst = VoteAgainst.objects.filter(theme=theme_id, user=request.user)
+        userVoteFor = VoteFor.objects.filter(voting=voting_id, user=request.user)
+        userVoteAgainst = VoteAgainst.objects.filter(voting=voting_id, user=request.user)
     
     isVoted = False
 
     if len(userVoteFor) != 0 or len(userVoteAgainst) != 0:
         isVoted = True
-    print(len(userVoteFor), len(userVoteAgainst))
-    print(isVoted)
     
     context={
-        'theme':theme[0],
+        'voting':voting[0],
         'votesFor':len(votesFor),
         'votesAgainst': len(votesAgainst),
         'percent': percent,
         'isVoted': isVoted
     }
 
-    return render(request, 'theme.html', context=context)
+    return render(request, 'voting.html', context=context)
 
-class CreateTheme(LoginRequiredMixin, CreateView):
-    form_class = CreateThemeForm
+class Index(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        votings = list(Voting.objects.all())
+        votings.sort(key=lambda x: x.date, reverse=True)
+        self.extra_context = {
+            'votings': votings
+        }
+        return super().get_context_data(**kwargs)
+        
+    def get_success_url(self):
+        return reverse_lazy('index')
+
+class CreateVoting(LoginRequiredMixin, CreateView):
+    form_class = CreateVotingForm
     template_name = 'form.html'
     login_url = reverse_lazy('login')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = 'Создать тему'
+        context["title"] = 'Создать голосование'
         context["button_text"] = "Создать"
         return context
 
@@ -109,24 +106,25 @@ class CreateTheme(LoginRequiredMixin, CreateView):
         form.save()
         return redirect('index')
 
-    
 class PersonalArea(LoginRequiredMixin, TemplateView):
     template_name='personal.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        user_themes = list(Theme.objects.filter(user=self.request.user))
-        user_themes.sort(key=lambda x: x.date, reverse=True)
+        user_votings = list(Voting.objects.filter(user=self.request.user))
+        user_votings.sort(key=lambda x: x.date, reverse=True)
         self.extra_context = {
-            'userthemes': user_themes
+            'uservotings': user_votings,
+            'lenVotings': len(user_votings)
         }
         return super().get_context_data(**kwargs)
 
-class DeleteThemes(StaffRequiredMixin, TemplateView):
-    template_name = 'deleteThemes.html'
+class DeleteVotings(StaffRequiredMixin, TemplateView):
+    template_name = 'deleteVotings.html'
     login_url = 'login'
     def get_context_data(self, *, object_list=None, **kwargs):
-        themes = Theme.objects.exclude(user=self.request.user)
+        votings = list(Voting.objects.exclude(user=self.request.user))
+        votings.sort(key=lambda x: x.date, reverse=True)
         self.extra_context = {
-            'themes': themes
+            'votings': votings
         }
         return super().get_context_data(**kwargs)

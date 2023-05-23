@@ -10,13 +10,19 @@
 <div class="personal-block-content">
     <h2>Личный кабинет</h2>
     <div class="block-content">
-        <div class="user-themes">
-            {% for theme in userthemes %}
-                <p class="theme-title">
-                <a href="{% url 'theme' theme.id %}">{{ theme.title }}</a>
+        {% if lenVotings %}
+        <div class="user-votings">
+            {% for voting in uservotings %}
+                <p class="voting-title">
+                <a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>
                 </p>
             {% endfor %}
         </div>
+        {% else %}
+        <div class="user-votings">
+            <p class="voting-title">Вы еще не создавали темы для голосования. <a href="{% url 'create' %}">Создайте!</a></p>
+        </div>
+        {% endif %}
         <div class="info">
             <p>{{ user.username }}</p>
             <p>{{ user.email }}</p>

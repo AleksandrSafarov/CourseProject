@@ -75,17 +75,27 @@ WSGI_APPLICATION = 'chooser.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
+'''
 DATABASES = {
    'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'tzkfsawd',
-    'USER': 'tzkfsawd',
-    'PASSWORD': 'yJxU18z7iiUKd0blj5Q5SmPNEtaO57WW',
-    'HOST': 'castor.db.elephantsql.com',
+    'NAME': 'ymxyuvbj',
+    'USER': 'ymxyuvbj',
+    'PASSWORD': 'vYV4m2gL9em12IMWch9uFRtV_zj3qL5n',
+    'HOST': 'drona.db.elephantsql.com',
     'PORT': 5432
    }
 }
+'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+
+
 
 
 # Password validation
