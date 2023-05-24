@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Удалить голосования{% endblock %}
+
+{% block extraheader %}
+{% endblock %}
+
+{% block content %}
+{% for stReq in staffRequests %}
+<p>{{stReq.user.username}}</p>
+<form action="getStaffRequestSubmit" method="get">
+    <button type="submit" class="accept" value="{{stReq.user.id}}" name="btnAccept">Одобрить</button>
+    <button type="submit" class="decline" value="{{stReq.user.id}}" name="btnDecline">Отклонить</button>
+</form>
+<hr>
+{% endfor %}
+{% endblock %}

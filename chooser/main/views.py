@@ -3,11 +3,38 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import *
+import datetime
 
 from .models import *
 from .forms import *
 from .utils import StaffRequiredMixin
 
+
+def getStaffRequestSubmit(request):
+    if request.GET.get('btnAccept'):
+        uId = int(request.GET.get('btnAccept'))
+        choosedUser = User.objects.filter(id=uId)[0]
+        choosedRequest = StaffRequest.objects.filter(user=choosedUser)[0]
+        if choosedRequest.status == 0:
+            StaffRequest.objects.filter(user=choosedUser).update(status=1)
+            User.objects.filter(id=uId).update(is_staff=True)
+        return HttpResponseRedirect('/requests')
+    if request.GET.get('btnDecline'):
+        uId = int(request.GET.get('btnDecline'))
+        choosedUser = User.objects.filter(id=uId)[0]
+        choosedRequest = StaffRequest.objects.filter(user=choosedUser)[0]
+        if choosedRequest.status == 0:
+            StaffRequest.objects.filter(user=choosedUser).update(status=2)
+        return HttpResponseRedirect('/requests')
+        
+
+def getStaffRequest(request):
+    if request.GET.get('btnRequest') and request.user.is_authenticated:
+        requests = StaffRequest.objects.filter(user=request.user)
+        if len(requests) == 0:
+            r = StaffRequest(user=request.user)
+            r.save()
+    return HttpResponseRedirect('/personal')
 
 def getVote(request):
     if(request.GET.get('btnFor')):
@@ -103,6 +130,7 @@ class CreateVoting(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.user = self.request.user
+        form.instance.date = datetime.datetime.now()
         form.save()
         return redirect('index')
 
@@ -110,11 +138,20 @@ class PersonalArea(LoginRequiredMixin, TemplateView):
     template_name='personal.html'
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        user_votings = list(Voting.objects.filter(user=self.request.user))
-        user_votings.sort(key=lambda x: x.date, reverse=True)
+        userVotings = list(Voting.objects.filter(user=self.request.user))
+        userVotings.sort(key=lambda x: x.date, reverse=True)
+        staffR = StaffRequest.objects.filter(user=self.request.user)
+        isRequestCreated = False
+        if len(staffR)==0:
+            requestStatus = 0
+        else:
+            isRequestCreated = True
+            requestStatus = staffR[0].status
         self.extra_context = {
-            'uservotings': user_votings,
-            'lenVotings': len(user_votings)
+            'uservotings': userVotings,
+            'lenVotings': len(userVotings),
+            'isRequestCreated': isRequestCreated,
+            'status': requestStatus
         }
         return super().get_context_data(**kwargs)
 
@@ -127,4 +164,21 @@ class DeleteVotings(StaffRequiredMixin, TemplateView):
         self.extra_context = {
             'votings': votings
         }
+        return super().get_context_data(**kwargs)
+
+class StaffRequests(StaffRequiredMixin, TemplateView):
+    template_name = 'staffRequests.html'
+    login_url = 'login'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        staffRequests = StaffRequest.objects.filter(status=0)
+        self.extra_context = {
+            'staffRequests': staffRequests
+        }
+        return super().get_context_data(**kwargs)
+
+class StaffPage(StaffRequiredMixin, TemplateView):
+    template_name = 'staffPage.html'
+    login_url = 'login'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        self.extra_context = {}
         return super().get_context_data(**kwargs)

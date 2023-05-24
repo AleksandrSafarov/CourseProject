@@ -29,6 +29,23 @@
             <a href="{% url 'edituserdata' %}" class="link-light">Изменить данные пользователя</a>
             <br>
             <a href="{% url 'changepassword' %}" class="link-light">Изменить пароль</a>
+            <hr>
+            {% if request.user.is_staff %}
+                <a href="{% url 'staff' %}" class="link-light">Страница администратора</a>
+            {% else %}
+                {% if isRequestCreated %}
+                    {% if status == 0 %}
+                        <p>Ваша заявка на расмотрении</p>
+                    {% elif status == 2 %}
+                        <p>Ваша заявка отклонена</p>
+                    {% endif %}
+                {% else %}
+                    <p>Подайте заявку, чтобы стать администратором:</p>
+                    <form action="getStaffRequest" method="get">
+                        <button type="submit" value="{{user.id}}" name="btnRequest">Подать заявку</button>
+                    </form>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 </div>
