@@ -13,5 +13,5 @@ urlpatterns = [
     path('personal/getStaffRequest', getStaffRequest, name='getstaffRequest'),
     path('requests/', StaffRequests.as_view(), name='staffRequests'),
     path('requests/getStaffRequestSubmit', getStaffRequestSubmit, name='getStaffRequestSubmit'),
-    path('staff', StaffPage.as_view(), name='staff')
+    path('staff/', StaffPage.as_view(), name='staff')
 ]

@@ -15,13 +15,13 @@ class VoteFor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     voting = models.ForeignKey(Voting, on_delete=models.CASCADE)
     class Meta:
-        verbose_name_plural = "VotesFor"
+        verbose_name_plural = "Votes for"
 
 class VoteAgainst(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     voting = models.ForeignKey(Voting, on_delete=models.CASCADE)
     class Meta:
-        verbose_name_plural = "VotesAgainst"
+        verbose_name_plural = "Votes against"
 
 class StaffRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
