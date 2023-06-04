@@ -12,7 +12,7 @@
     <a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>
 </p>
 <form action="deletevoting" method="get">
-    <button type="submit" class="voteFor" value="{{voting.id}}" name="btnDel">Удалить</button>
+    <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnDel">Удалить</button>
 </form>
 <hr>
 {% endfor %}

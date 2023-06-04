@@ -26,3 +26,8 @@ class VoteAgainst(models.Model):
 class StaffRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     status = models.IntegerField(default=0)
+
+class Complaint(models.Model):
+    voting = models.ForeignKey(Voting, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    description = models.TextField(default="")

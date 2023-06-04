@@ -38,16 +38,16 @@ def getStaffRequest(request):
 
 def getVote(request):
     if(request.GET.get('btnFor')):
-        tId = int(request.GET.get('btnFor'))
-        choosedVoting = Voting.objects.filter(id=tId)[0]
+        vId = int(request.GET.get('btnFor'))
+        choosedVoting = Voting.objects.filter(id=vId)[0]
         if len(VoteFor.objects.filter(user=request.user, voting=choosedVoting)) or len(VoteAgainst.objects.filter(user=request.user, voting=choosedVoting)):
             return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnFor'))) 
         vote = VoteFor(user=request.user, voting=choosedVoting)
         vote.save()
         return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnFor')))
     elif(request.GET.get('btnAgainst')):
-        tId = int(request.GET.get('btnAgainst'))
-        choosedVoting = Voting.objects.filter(id=tId)[0]
+        vId = int(request.GET.get('btnAgainst'))
+        choosedVoting = Voting.objects.filter(id=vId)[0]
         if len(VoteAgainst.objects.filter(user=request.user, voting=choosedVoting)) or len(VoteFor.objects.filter(user=request.user, voting=choosedVoting)):
             return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnAgainst'))) 
         vote = VoteAgainst(user=request.user, voting=choosedVoting)
@@ -57,13 +57,30 @@ def getVote(request):
 
 def deleteVoting(request):
     if request.GET.get('btnDel'):
-        tId = int(request.GET.get('btnDel'))
-        choosedVoting = Voting.objects.filter(id=tId)
-        if len(choosedVoting) == 0:
-            return HttpResponseRedirect('/del')
+        vId = int(request.GET.get('btnDel'))
+        choosedVoting = Voting.objects.filter(id=vId)
         choosedVoting.delete()
         return HttpResponseRedirect('/del')
     return render(request, 'index.html')
+
+def complaintSubmit(request):
+    if request.GET.get('btnDelete'):
+        cId = int(request.GET.get('btnDelete'))
+        choosedComplaint = Complaint.objects.get(id=cId)
+        choosedVoting = choosedComplaint.voting
+        choosedVoting.delete()
+    if request.GET.get('btnDecline'):
+        cId = int(request.GET.get('btnDecline'))
+        choosedComplaint = Complaint.objects.get(id=cId)
+        choosedComplaint.delete()
+    return HttpResponseRedirect('/complaints')
+
+def createComplaint(request):
+    if request.GET.get('btnCreate'):
+        vId = int(request.GET.get('btnCreate'))
+        complaint = Complaint(voting=Voting.objects.filter(id=vId)[0], user=request.user)
+        complaint.save()
+    return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnCreate'))) 
 
 def voting(request, voting_id):
     voting = Voting.objects.filter(id=voting_id)
@@ -93,12 +110,15 @@ def voting(request, voting_id):
     if len(userVoteFor) != 0 or len(userVoteAgainst) != 0:
         isVoted = True
     
+    userComplaint = Complaint.objects.filter(user=request.user, voting=voting_id)
+
     context={
         'voting':voting[0],
         'votesFor':len(votesFor),
         'votesAgainst': len(votesAgainst),
         'percent': percent,
-        'isVoted': isVoted
+        'isVoted': isVoted,
+        'isComplaintCreated': len(userComplaint)!=0
     }
 
     return render(request, 'voting.html', context=context)
@@ -181,4 +201,16 @@ class StaffPage(StaffRequiredMixin, TemplateView):
     login_url = 'login'
     def get_context_data(self, *, object_list=None, **kwargs):
         self.extra_context = {}
+        return super().get_context_data(**kwargs)
+
+class ComplaintPage(StaffRequiredMixin, TemplateView):
+    template_name = 'complaints.html'
+    login_url = 'login'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        complaints = Complaint.objects.all().exclude(user=self.request.user)
+        for complaint in complaints:
+            print(complaint.voting.title)
+        self.extra_context = {
+            'complaints': complaints
+        }
         return super().get_context_data(**kwargs)

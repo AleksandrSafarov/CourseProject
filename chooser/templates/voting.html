@@ -9,6 +9,7 @@
 {% block content %}
     <h2>{{voting.title}}</h2>
     <p>{{voting.description}}</p>
+    <p>Создал: {{ voting.user.username }}</p>
     {% if percent == -1 %}
         <p>Никто еще не проголосовал</p>
     {% else %}
@@ -23,12 +24,21 @@
         <p>Вы уже проголосовали</p>
         {% else %}
         <form action="getVote" method="get">
-            <button type="submit" class="voteFor" value="{{voting.id}}" name="btnFor">За</button>
-            <button type="submit" class="voteAgainst" value="{{voting.id}}" name="btnAgainst">Против</button>
+            <button type="submit" class="btn btn-success" value="{{voting.id}}" name="btnFor">За</button>
+            <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnAgainst">Против</button>
         </form>
         {% endif %}
     {% endif %}
     {% else %}
         <p>Авторизируйтесь, чтобы проголосовать.</p>
+    {% endif %}
+    {% if voting.user.id != request.user.if %}
+        {% if isComplaintCreated %}
+            <p>Ваша жалоба на рассмотрении</p>
+        {% else %}
+            <form action="createComplaint" method="get">
+                <button type="submit" class="btn btn-warning" value="{{voting.id}}" name="btnCreate">Подать жалобу</button>
+            </form>
+        {% endif %}
     {% endif %}
 {% endblock %}
