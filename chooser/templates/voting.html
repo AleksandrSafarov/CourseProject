@@ -7,9 +7,13 @@
 {% endblock %}
 
 {% block content %}
-    <h2>{{voting.title}}</h2>
-    <p>{{voting.description}}</p>
+<div class="voting-content">
+    <h3>{{voting.title}}</h3>
+    <h4>Описание:</h4>
+    <p style="word-wrap: break-word; max-width: 80%;">{{voting.description}}</p>
+    {% if voting.user.id != request.user.id %}
     <p>Создал: {{ voting.user.username }}</p>
+    {% endif %}
     {% if percent == -1 %}
         <p>Никто еще не проголосовал</p>
     {% else %}
@@ -23,22 +27,30 @@
         {% if isVoted %}
         <p>Вы уже проголосовали</p>
         {% else %}
-        <form action="getVote" method="get">
-            <button type="submit" class="btn btn-success" value="{{voting.id}}" name="btnFor">За</button>
-            <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnAgainst">Против</button>
-        </form>
+            <form action="getVote" method="get">
+                <span class="voting-button">
+                    <button type="submit" class="btn btn-success" value="{{voting.id}}" name="btnFor">За</button>
+                </span>
+                <span class="voting-button">
+                    <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnAgainst">Против</button>
+                </span>
+            </form>
         {% endif %}
     {% endif %}
     {% else %}
         <p>Авторизируйтесь, чтобы проголосовать.</p>
     {% endif %}
-    {% if voting.user.id != request.user.if %}
+    <hr style="visibility: hidden;">
+    {% if voting.user.id != request.user.id %}
         {% if isComplaintCreated %}
             <p>Ваша жалоба на рассмотрении</p>
         {% else %}
             <form action="createComplaint" method="get">
-                <button type="submit" class="btn btn-warning" value="{{voting.id}}" name="btnCreate">Подать жалобу</button>
+                <span class="voting-button"></span>
+                    <button type="submit" class="btn btn-warning" value="{{voting.id}}" name="btnCreate">Подать жалобу</button>
+                </span>
             </form>
         {% endif %}
     {% endif %}
+</div>
 {% endblock %}

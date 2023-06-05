@@ -17,6 +17,7 @@ div.row{
 div.form-container{
     padding-left: 30%;
     padding-right: 30%;
+    padding-top: 7%;
 }
 
 div.signup-link{
@@ -33,12 +34,13 @@ div.signup-link{
 
 div.block-content{
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 3fr 1fr;
 }
 
 div.personal-block-content{
+    padding-top: 8%;
     padding-left: 3%;
-    padding-right: 10%;
+    padding-right: 5%;
 }
 
 div.info{
@@ -49,4 +51,39 @@ div.info{
     background-color: rgb(38, 70, 83);
     font-size: large;
     margin-left: 5%;
+    margin-bottom: 85%;
+}
+
+div.index-block{
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    margin-left: 3%;
+    padding-top: 7%;
+}
+
+div.create-voting{
+    margin-left: 78%;
+    position: fixed;
+}
+
+div.base-header{
+    position: fixed;
+    width: 100%;
+}
+
+div.staff-page-content{
+    padding-top: 7%;
+    margin-left: 17%;
+    margin-right: 17%;
+    text-align: center;
+}
+
+div.staff-main-content{
+    padding-top: 7%;
+    margin-left: 3%;
+}
+
+div.voting-content{
+    padding-top: 7%;
+    margin-left: 3%;
 }

@@ -9,9 +9,11 @@
 {% block content %}
 <div class="personal-block-content">
     <h2>Личный кабинет</h2>
+    <hr>
     <div class="block-content">
         {% if lenVotings %}
         <div class="user-votings">
+            <h4>Ваши голосования</h4>
             {% for voting in uservotings %}
                 <p class="voting-title">
                 <a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>

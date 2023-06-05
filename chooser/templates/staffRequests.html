@@ -7,12 +7,14 @@
 {% endblock %}
 
 {% block content %}
-{% for stReq in staffRequests %}
-<p>{{stReq.user.username}}</p>
-<form action="getStaffRequestSubmit" method="get">
-    <button type="submit" class="btn btn-success" value="{{stReq.user.id}}" name="btnAccept">Одобрить</button>
-    <button type="submit" class="btn btn-danger" value="{{stReq.user.id}}" name="btnDecline">Отклонить</button>
-</form>
-<hr>
-{% endfor %}
+<div class="staff-page-content">
+    {% for stReq in staffRequests %}
+        <p class="fs-5">{{stReq.user.username}}</p>
+        <form action="getStaffRequestSubmit" method="get">
+            <button type="submit" class="btn btn-success" value="{{stReq.user.id}}" name="btnAccept">Одобрить</button>
+            <button type="submit" class="btn btn-danger" value="{{stReq.user.id}}" name="btnDecline">Отклонить</button>
+        </form>
+        <hr>
+    {% endfor %}
+</div>
 {% endblock %}

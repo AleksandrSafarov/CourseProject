@@ -7,14 +7,16 @@
 {% endblock %}
 
 {% block content %}
-{% for complaint in complaints %}
-<p>
-    <a href="{% url 'voting' complaint.voting.id %}">{{ complaint.voting.title }}</a>
-</p>
-<form action="complaintSubmit" method="get">
-    <button type="submit" class="btn btn-danger" value="{{complaint.id}}" name="btnDelete">Удалить</button>
-    <button type="submit" class="btn btn-secondary" value="{{complaint.id}}" name="btnDecline">Отклонить</button>
-</form>
-<hr>
-{% endfor %}
+    <div class="staff-page-content">
+        {% for complaint in complaints %}
+            <p class="fs-5">
+                <a href="{% url 'voting' complaint.voting.id %}">{{ complaint.voting.title }}</a>
+            </p>
+            <form action="complaintSubmit" method="get">
+                <button type="submit" class="btn btn-danger" value="{{complaint.id}}" name="btnDelete">Удалить</button>
+                <button type="submit" class="btn btn-secondary" value="{{complaint.id}}" name="btnDecline">Отклонить</button>
+            </form>
+            <hr>
+        {% endfor %}
+    </div>
 {% endblock %}

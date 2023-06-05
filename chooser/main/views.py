@@ -179,7 +179,7 @@ class DeleteVotings(StaffRequiredMixin, TemplateView):
     template_name = 'deleteVotings.html'
     login_url = 'login'
     def get_context_data(self, *, object_list=None, **kwargs):
-        votings = list(Voting.objects.exclude(user=self.request.user))
+        votings = list(Voting.objects.all())
         votings.sort(key=lambda x: x.date, reverse=True)
         self.extra_context = {
             'votings': votings

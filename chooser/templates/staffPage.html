@@ -7,13 +7,15 @@
 {% endblock %}
 
 {% block content %}
-<p>
-    <a href="{% url 'deleteVotings' %}">Удаление голосований</a>
-</p>
-<p>
-    <a href="{% url 'staffRequests' %}">Просмотр заявок на получение прав администратора</a>
-</p>
-<p>
-    <a href="{% url 'complaints' %}">Жалобы пользователей</a>
-</p>
+<div class="staff-main-content">
+    <p class="fs-5">
+        <a href="{% url 'deleteVotings' %}">Удаление голосований</a>
+    </p>
+    <p class="fs-5">
+        <a href="{% url 'complaints' %}">Жалобы пользователей</a>
+    </p>
+    <p class="fs-5">
+        <a href="{% url 'staffRequests' %}">Просмотр заявок на получение прав администратора</a>
+    </p>
+</div>
 {% endblock %}

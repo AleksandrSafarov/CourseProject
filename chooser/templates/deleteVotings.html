@@ -7,13 +7,15 @@
 {% endblock %}
 
 {% block content %}
-{% for voting in votings %}
-<p>
-    <a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>
-</p>
-<form action="deletevoting" method="get">
-    <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnDel">Удалить</button>
-</form>
-<hr>
-{% endfor %}
+<div class="staff-page-content">
+    {% for voting in votings %}
+        <p class="fs-5">
+            <a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>
+        </p>
+        <form action="deletevoting" method="get">
+            <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnDel">Удалить</button>
+        </form>
+        <hr>
+    {% endfor %}
+</div>
 {% endblock %}
