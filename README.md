@@ -4,7 +4,7 @@
 ### Запуск web-приложения
 - Загрузите проект
 ```
-git clone github.com/AleksandrSafarov/predprof
+git clone github.com/AleksandrSafarov/CourseProject
 ```
 - Установите виртуальное окружение в папке проекта
 ```
