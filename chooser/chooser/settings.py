@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -77,9 +78,9 @@ DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql',
     'NAME': 'neondb',
-    'USER': 'aleks.safarov2005',
-    'PASSWORD': '9VMhsWNZPDb3',
-    'HOST': 'ep-delicate-snow-348574.us-east-2.aws.neon.tech',
+    'USER': 'mr.safarovsasha2005',
+    'PASSWORD': 'AYB7bjGNv8Vn',
+    'HOST': 'ep-restless-haze-127542.us-east-2.aws.neon.tech',
     'PORT': '5432',
   }
 }
@@ -124,6 +125,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 #STATIC_ROOT = BASE_DIR / 'static'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

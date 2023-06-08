@@ -15,14 +15,22 @@
         <div class="user-votings">
             <h4>Ваши голосования</h4>
             {% for voting in uservotings %}
-                <p class="voting-title">
-                <a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>
+            <div class="user-voting" style="margin-left: 1%;">
+                <p class="fs-5">
+                    <a href="{% url 'voting' voting.0.id %}">{{ voting.0.title }}</a>
                 </p>
+                <p class="fs-6">Создано: {{ voting.0.get_datetime }}. Голосов: {{ voting.1 }}.</p>
+                <form action="deleteUserVoting" method="get">
+                    <button type="submit" class="btn btn-danger" value="{{voting.0.id}}" name="btnDelete">Удалить</button>
+                </form>
+            </div>
+                <hr>
+
             {% endfor %}
         </div>
         {% else %}
         <div class="user-votings">
-            <p class="voting-title">Вы еще не создавали темы для голосования. <a href="{% url 'create' %}">Создайте!</a></p>
+            <p class="fs-5">Вы еще не создавали темы для голосования. <a href="{% url 'create' %}">Создайте!</a></p>
         </div>
         {% endif %}
         <div class="info">
@@ -44,7 +52,7 @@
                 {% else %}
                     <p>Подайте заявку, чтобы стать администратором:</p>
                     <form action="getStaffRequest" method="get">
-                        <button type="submit" value="{{user.id}}" name="btnRequest">Подать заявку</button>
+                        <button type="submit" class="btn btn-primary" value="{{user.id}}" name="btnRequest">Подать заявку</button>
                     </form>
                 {% endif %}
             {% endif %}

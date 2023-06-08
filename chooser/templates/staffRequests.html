@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Удалить голосования{% endblock %}
+{% block title %}Заявки{% endblock %}
 
 {% block extraheader %}
 {% endblock %}
@@ -9,10 +9,11 @@
 {% block content %}
 <div class="staff-page-content">
     {% for stReq in staffRequests %}
-        <p class="fs-5">{{stReq.user.username}}</p>
+        <p class="fs-5">{{stReq.0.user.username}}</p>
+        <p class="fs-6">Текущих голосований: {{ stReq.1 }}. Голосов: {{ stReq.2 }}.</p>
         <form action="getStaffRequestSubmit" method="get">
-            <button type="submit" class="btn btn-success" value="{{stReq.user.id}}" name="btnAccept">Одобрить</button>
-            <button type="submit" class="btn btn-danger" value="{{stReq.user.id}}" name="btnDecline">Отклонить</button>
+            <button type="submit" class="btn btn-success" value="{{stReq.0.user.id}}" name="btnAccept">Одобрить</button>
+            <button type="submit" class="btn btn-danger" value="{{stReq.0.user.id}}" name="btnDecline">Отклонить</button>
         </form>
         <hr>
     {% endfor %}

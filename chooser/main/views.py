@@ -1,4 +1,4 @@
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -8,6 +8,11 @@ import datetime
 from .models import *
 from .forms import *
 from .utils import StaffRequiredMixin
+
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
+import numpy as np
 
 
 def getStaffRequestSubmit(request):
@@ -53,15 +58,23 @@ def getVote(request):
         vote = VoteAgainst(user=request.user, voting=choosedVoting)
         vote.save()
         return HttpResponseRedirect('/voting/%i'%int(request.GET.get('btnAgainst')))
-    return render(request, 'index.html')
+    return HttpResponse('')
 
 def deleteVoting(request):
-    if request.GET.get('btnDel'):
-        vId = int(request.GET.get('btnDel'))
+    if request.GET.get('btnDelete'):
+        vId = int(request.GET.get('btnDelete'))
         choosedVoting = Voting.objects.filter(id=vId)
         choosedVoting.delete()
-        return HttpResponseRedirect('/del')
-    return render(request, 'index.html')
+        return HttpResponseRedirect('/delete')
+    return HttpResponse('')
+
+def deleteUserVoting(request):
+    if request.GET.get('btnDelete'):
+        vId = int(request.GET.get('btnDelete'))
+        choosedVoting = Voting.objects.filter(id=vId)
+        choosedVoting.delete()
+        return HttpResponseRedirect('/personal/')
+    return HttpResponse('')
 
 def complaintSubmit(request):
     if request.GET.get('btnDelete'):
@@ -110,7 +123,20 @@ def voting(request, voting_id):
     if len(userVoteFor) != 0 or len(userVoteAgainst) != 0:
         isVoted = True
     
-    userComplaint = Complaint.objects.filter(user=request.user, voting=voting_id)
+    userComplaint=[]
+
+    if request.user.is_authenticated:
+        userComplaint = Complaint.objects.filter(user=request.user, voting=voting_id)
+
+    if len(votesFor)!=0 and len(votesAgainst)!=0:
+        labels = 'За', 'Против'
+        sizes = [len(votesFor),len(votesAgainst)]
+        explode = (0.1, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+        fig1, ax1 = plt.subplots()
+        ax1.pie(sizes, explode=explode, labels=labels, autopct='%1.1f%%',
+                shadow=True, startangle=90, colors=((0, 1, 0, 1),(1, 0, 0, 1)))
+        ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+        plt.savefig('static/images/chart.png',dpi=200)
 
     context={
         'voting':voting[0],
@@ -118,7 +144,8 @@ def voting(request, voting_id):
         'votesAgainst': len(votesAgainst),
         'percent': percent,
         'isVoted': isVoted,
-        'isComplaintCreated': len(userComplaint)!=0
+        'isComplaintCreated': len(userComplaint)!=0,
+        'sumVotes': len(votesFor)+len(votesAgainst)
     }
 
     return render(request, 'voting.html', context=context)
@@ -128,9 +155,16 @@ class Index(TemplateView):
 
     def get_context_data(self, **kwargs):
         votings = list(Voting.objects.all())
+        if self.request.user.is_authenticated:
+            votings = list(Voting.objects.all().exclude(user=self.request.user))
         votings.sort(key=lambda x: x.date, reverse=True)
+        votingsAndVotes=[]
+        for v in votings:
+            votesFor = len(list(VoteFor.objects.filter(voting=v)))
+            votesAgainst = len(list(VoteAgainst.objects.filter(voting=v)))
+            votingsAndVotes.append([v, votesFor+votesAgainst])
         self.extra_context = {
-            'votings': votings
+            'votings': votingsAndVotes
         }
         return super().get_context_data(**kwargs)
         
@@ -160,6 +194,11 @@ class PersonalArea(LoginRequiredMixin, TemplateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         userVotings = list(Voting.objects.filter(user=self.request.user))
         userVotings.sort(key=lambda x: x.date, reverse=True)
+        userVotingAndVotes=[]
+        for v in userVotings:
+            votesFor = len(list(VoteFor.objects.filter(voting=v)))
+            votesAgainst = len(list(VoteAgainst.objects.filter(voting=v)))
+            userVotingAndVotes.append([v, votesFor+votesAgainst])
         staffR = StaffRequest.objects.filter(user=self.request.user)
         isRequestCreated = False
         if len(staffR)==0:
@@ -168,7 +207,7 @@ class PersonalArea(LoginRequiredMixin, TemplateView):
             isRequestCreated = True
             requestStatus = staffR[0].status
         self.extra_context = {
-            'uservotings': userVotings,
+            'uservotings': userVotingAndVotes,
             'lenVotings': len(userVotings),
             'isRequestCreated': isRequestCreated,
             'status': requestStatus
@@ -181,8 +220,13 @@ class DeleteVotings(StaffRequiredMixin, TemplateView):
     def get_context_data(self, *, object_list=None, **kwargs):
         votings = list(Voting.objects.all())
         votings.sort(key=lambda x: x.date, reverse=True)
+        votingsAndVotes = []
+        for v in votings:
+            votesFor = len(list(VoteFor.objects.filter(voting=v)))
+            votesAgainst = len(list(VoteAgainst.objects.filter(voting=v)))
+            votingsAndVotes.append([v, votesFor+votesAgainst])
         self.extra_context = {
-            'votings': votings
+            'votings': votingsAndVotes
         }
         return super().get_context_data(**kwargs)
 
@@ -191,8 +235,13 @@ class StaffRequests(StaffRequiredMixin, TemplateView):
     login_url = 'login'
     def get_context_data(self, *, object_list=None, **kwargs):
         staffRequests = StaffRequest.objects.filter(status=0)
+        userInfo = []
+        for s in staffRequests:
+            userVotings = len(list(Voting.objects.filter(user=s.user)))
+            votes = len(list(VoteFor.objects.filter(user=s.user))) + len(list(VoteAgainst.objects.filter(user=s.user)))
+            userInfo.append([s, userVotings, votes])
         self.extra_context = {
-            'staffRequests': staffRequests
+            'staffRequests': userInfo
         }
         return super().get_context_data(**kwargs)
 

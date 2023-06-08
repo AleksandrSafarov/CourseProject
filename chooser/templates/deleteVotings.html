@@ -10,10 +10,11 @@
 <div class="staff-page-content">
     {% for voting in votings %}
         <p class="fs-5">
-            <a href="{% url 'voting' voting.id %}">{{ voting.title }}</a>
+            <a href="{% url 'voting' voting.0.id %}">{{ voting.0.title }}</a>
         </p>
-        <form action="deletevoting" method="get">
-            <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnDel">Удалить</button>
+        <p class="fs-6">Создано: {{ voting.0.get_datetime }}. Голосов: {{ voting.1 }}.</p>
+        <form action="deleteVoting" method="get">
+            <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnDelete">Удалить</button>
         </form>
         <hr>
     {% endfor %}

@@ -12,6 +12,7 @@
             <p class="fs-5">
                 <a href="{% url 'voting' complaint.voting.id %}">{{ complaint.voting.title }}</a>
             </p>
+            <p class="fs-6">Подал жалобу: {{ complaint.user.username }}</p>
             <form action="complaintSubmit" method="get">
                 <button type="submit" class="btn btn-danger" value="{{complaint.id}}" name="btnDelete">Удалить</button>
                 <button type="submit" class="btn btn-secondary" value="{{complaint.id}}" name="btnDecline">Отклонить</button>
