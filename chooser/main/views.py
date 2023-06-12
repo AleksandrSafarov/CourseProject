@@ -13,6 +13,7 @@ import matplotlib
 matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import numpy as np
+from operator import itemgetter
 
 
 def getStaffRequestSubmit(request):
@@ -164,12 +165,37 @@ class Index(TemplateView):
             votesAgainst = len(list(VoteAgainst.objects.filter(voting=v)))
             votingsAndVotes.append([v, votesFor+votesAgainst])
         self.extra_context = {
-            'votings': votingsAndVotes
+            'votings': votingsAndVotes,
+            'isIndex': True
         }
         return super().get_context_data(**kwargs)
         
     def get_success_url(self):
         return reverse_lazy('index')
+
+class Popular(TemplateView):
+    template_name = 'index.html'
+
+    def get_context_data(self, **kwargs):
+        votings = list(Voting.objects.all())
+        if self.request.user.is_authenticated:
+            votings = list(Voting.objects.all().exclude(user=self.request.user))
+        votingsAndVotes=[]
+        for v in votings:
+            votesFor = len(list(VoteFor.objects.filter(voting=v)))
+            votesAgainst = len(list(VoteAgainst.objects.filter(voting=v)))
+            votingsAndVotes.append([v, votesFor+votesAgainst])
+        if len(votingsAndVotes):
+            votingsAndVotes.sort(key = lambda row: row[1], reverse=True)
+        print(votingsAndVotes)
+        self.extra_context = {
+            'votings': votingsAndVotes,
+            'isIndex': False
+        }
+        return super().get_context_data(**kwargs)
+        
+    def get_success_url(self):
+        return reverse_lazy('popular')
 
 class CreateVoting(LoginRequiredMixin, CreateView):
     form_class = CreateVotingForm

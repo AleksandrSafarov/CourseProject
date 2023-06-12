@@ -1,5 +1,5 @@
 * {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Helvetica', sans-serif;
 }
 
 body {
@@ -65,8 +65,8 @@ div.votings{
     padding-right: 19%;
 }
 
-div.create-voting{
-    margin-left: 78%;
+div.index-buttons{
+    margin-left: 72%;
     position: fixed;
 }
 

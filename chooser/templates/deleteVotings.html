@@ -14,7 +14,7 @@
         </p>
         <p class="fs-6">Создано: {{ voting.0.get_datetime }}. Голосов: {{ voting.1 }}.</p>
         <form action="deleteVoting" method="get">
-            <button type="submit" class="btn btn-danger" value="{{voting.id}}" name="btnDelete">Удалить</button>
+            <button type="submit" class="btn btn-danger" value="{{voting.0.id}}" name="btnDelete">Удалить</button>
         </form>
         <hr>
     {% endfor %}

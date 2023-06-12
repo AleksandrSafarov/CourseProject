@@ -17,10 +17,19 @@
             <hr>
         {% endfor %}
     </div>
-    <div class="create-voting">
+    <div class="index-buttons">
         {% if user.is_authenticated %}
             <a href="{% url 'create' %}">
-                <button class="btn btn-primary">Создать голосование</button>
+                <button class="btn btn-primary" style="margin-bottom: 3%;">Создать голосование</button>
+            </a>
+        {% endif %}
+        {% if isIndex %}
+            <a href="{% url 'popular' %}">
+                <button class="btn btn-light">Показать популярные голосования</button>
+            </a>
+        {% else %}
+            <a href="{% url 'index' %}">
+                <button class="btn btn-light">Показать недавние голосования</button>
             </a>
         {% endif %}
     </div>

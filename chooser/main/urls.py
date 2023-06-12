@@ -7,6 +7,7 @@ from .views import *
 
 urlpatterns = [
     path('', Index.as_view(), name='index'),
+    path('popular/', Popular.as_view(), name='popular'),
     path('create/', CreateVoting.as_view(), name='create'),
     path('personal/', PersonalArea.as_view(), name='personal'),
     path('delete/', DeleteVotings.as_view(), name='deleteVotings'),
