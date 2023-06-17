@@ -137,3 +137,5 @@ GitHub.sublime-settings
 .history
 
 db.sqlite3
+
+static/images/chart.png
