@@ -8,6 +8,8 @@
 
 {% block content %}
 <div class="staff-page-content">
+    <h2>Заявки на получение прав администратора</h2>
+    <hr>
     {% for stReq in staffRequests %}
         <p class="fs-5">{{stReq.0.user.username}}</p>
         <p class="fs-6">Текущих голосований: {{ stReq.1 }}. Голосов: {{ stReq.2 }}.</p>

@@ -8,6 +8,8 @@
 
 {% block content %}
     <div class="staff-page-content">
+        <h2>Жалобы пользователей</h2>
+        <hr>
         {% for complaint in complaints %}
             <p class="fs-5">
                 <a href="{% url 'voting' complaint.voting.id %}">{{ complaint.voting.title }}</a>

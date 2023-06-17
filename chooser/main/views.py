@@ -187,7 +187,6 @@ class Popular(TemplateView):
             votingsAndVotes.append([v, votesFor+votesAgainst])
         if len(votingsAndVotes):
             votingsAndVotes.sort(key = lambda row: row[1], reverse=True)
-        print(votingsAndVotes)
         self.extra_context = {
             'votings': votingsAndVotes,
             'isIndex': False
@@ -283,8 +282,6 @@ class ComplaintPage(StaffRequiredMixin, TemplateView):
     login_url = 'login'
     def get_context_data(self, *, object_list=None, **kwargs):
         complaints = Complaint.objects.all().exclude(user=self.request.user)
-        for complaint in complaints:
-            print(complaint.voting.title)
         self.extra_context = {
             'complaints': complaints
         }

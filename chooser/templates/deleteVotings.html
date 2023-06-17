@@ -8,6 +8,8 @@
 
 {% block content %}
 <div class="staff-page-content">
+    <h2>Удалить голосования</h2>
+    <hr>
     {% for voting in votings %}
         <p class="fs-5">
             <a href="{% url 'voting' voting.0.id %}">{{ voting.0.title }}</a>
